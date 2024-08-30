@@ -95,9 +95,9 @@ const updateApplicationStatus=async(body)=>{
     }
     console.log("updateApplicationStatus",body)
 
-    // const data = await Job_Application.findByIdAndUpdate(id, { status: status,reason:reason }, { new: true });
+    const data = await Job_Application.findByIdAndUpdate(id, { status: status,reason:reason }, { new: true });
      sendMail(body)
-    // console.log(data);
+    console.log(data);
 
     
     return body;
