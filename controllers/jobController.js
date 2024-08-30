@@ -130,11 +130,9 @@ router.post('/admin/get-application-info',async (req,res)=>{
 router.post('/admin/upateStatus',async(req,res)=>{
     try {
         // console.log("update status",req.body);
+        const body=req.body;
         
-        const {id,status,reason,candidate,jobTitle}=req.body
-        console.log(id,status,reason,candidate,jobTitle);
-        
-        const data=await jobService.updateApplicationStatus(id,status,reason,candidate,jobTitle)
+        const data=await jobService.updateApplicationStatus(body)
         res.json(data)
     } catch (error) {
         console.log(error);

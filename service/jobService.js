@@ -1,7 +1,7 @@
 const Job = require('../models/Job')
 const Job_Application = require('../models/Job_Applications');
 const User = require('../models/User');
-const { sendSelectionEmails, sendRejectionEmails } = require('./mail/mailService');
+const {  sendMail } = require('./mail/mailService');
 const { userFindById } = require('./userService');
 // const JobCategorie=require('../models/JobCategory')
 
@@ -83,25 +83,24 @@ const getInfoApplication = async (data) => {
     return { job, user }
 }
 
-const updateApplicationStatus=async(id,status,reason,candidate,title)=>{
-    // // const hrEmail= 'tejasnagare9999@gmail.com'
-    // // const hrName= 'Tejas Nagare'
-    // const user=await User.findById(candidate)
-    // // if(status==='select')
-    // // {
-    // //  console.log("select");
-     
-    // //     sendSelectionEmails(user.email, user.name, title, hrEmail, hrName);
-    // // }else if(status ==='reject')
-    // // {
-    // //     console.log("reject");
-        
-    // //     sendRejectionEmails(user.email,  user.name, hrEmail, hrName, title, reason);
-    // // }
-    const data = await Job_Application.findByIdAndUpdate(id, { status: status,reason:reason }, { new: true });
-    console.log(data);
+const updateApplicationStatus=async(body)=>{
+   
+    const user=await User.findById(body.candidate);
     
-    return data;
+    body={
+        ...body,
+        candidatEmail: user.email,
+        candidateName:user.name
+
+    }
+    console.log("updateApplicationStatus",body)
+
+    // const data = await Job_Application.findByIdAndUpdate(id, { status: status,reason:reason }, { new: true });
+     sendMail(body)
+    // console.log(data);
+
+    
+    return body;
 }
 
 
@@ -109,7 +108,7 @@ const get_all_past_application=async()=>{
     return await Job_Application.find({ status: { $ne: "pending" } })
 }
 const update_user_applicatin=async(id,body)=>{
-    const result = await Job_Application.findByIdAndUpdate(id, body, { new: true });
+    const result = await Job_Application.Updae(id, body, { new: true });
     return result;
 }
 

@@ -1,19 +1,19 @@
-// const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 
 
-const candidateSelectionEmailTemplate = (candidateName, jobTitle) => `
+const candidateSelectionEmailTemplate = (candidateName, jobTitle,adminName) => `
   Hi ${candidateName},
 
   Congratulations! You have been selected for the position of ${jobTitle}.
 
   Best regards,
-  ABC
+  ${adminName}
 `;
 
-const hrSelectionEmailTemplate = (hrName, candidateName, jobTitle) => `
-  Hi ${hrName},
+const hrSelectionEmailTemplate = (adminName, candidateName, jobTitle) => `
+  Hi ${adminName},
 
   The candidate ${candidateName} has been selected for the position of ${jobTitle}.
 
@@ -21,7 +21,7 @@ const hrSelectionEmailTemplate = (hrName, candidateName, jobTitle) => `
   ABC
 `;
 
-const candidateRejectionEmailTemplate = (candidateName, reason, title) => `
+const candidateRejectionEmailTemplate = (candidateName, reason, title,adminName) => `
   Hi ${candidateName},
 
   We regret to inform you that your application for the position of ${title} has been unsuccessful.
@@ -31,11 +31,12 @@ const candidateRejectionEmailTemplate = (candidateName, reason, title) => `
   We appreciate your interest in our company and encourage you to apply for future opportunities.
 
   Best regards,
-  ABC
+  ${adminName}
 `;
 
-const hrRejectionEmailTemplate = (hrName, candidateName, reason, title) => `
-  Hi ${hrName},
+const hrRejectionEmailTemplate = (adminName, candidateName, reason, title) => 
+  `
+  Hi ${adminName},
 
   The candidate ${candidateName} has been rejected for ${title}.
   Reason: ${reason}
@@ -44,96 +45,60 @@ const hrRejectionEmailTemplate = (hrName, candidateName, reason, title) => `
   ABC
 `;
 
-// const nodemailer = require('nodemailer');
 
+const sendMail = ((body) => {
+  const {adminName,admin_mail,status,candidateName,candidatEmail,reason,jobTitle}=body
+  let subject =`Selection of ${candidateName} for ${jobTitle}`
+  let subject2
+if(status !== 'select')
+{
+  subject= `Rejection of ${candidateName} for ${jobTitle}`
+}
+console.log(subject);
 
-// // Define the sendmail function properly
-// const sendmail = (req, res) => {
-//   const transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     secure: true,
-//     port: 465,
-//     auth: {
-//       user: 'umanagare10@gmail.com',
-//       pass: 'tcrz lycp unmj ufgn' // Replace this with your actual password or an app-specific password
-//     }
-//   });
+  const transporter = nodemailer.createTransport({
+      service: "gmail",
+      secure: true,
+      port: 465,
+      auth: {
+          user: "umanagare10@gmail.com",
+          pass: "tcrz lycp unmj ufgn"
+      }
+  });
 
-//   const mailOptions = {
-//     from: 'umanagare10@gmail.com',
-//     to: 'tejasnagare99@gmail.com',
-//     subject: 'Node.js Mail Testing!',
-//     text: 'Hello, this is a test email!'
-//   };
-
-//   transporter.sendMail(mailOptions, (error, info) => {
-//     if (error) {
-//       console.error('Error sending email:', error);
-//       res.status(500).send('Error sending email');
-//     } else {
-//       console.log('Email sent:', info.response);
-//       res.send('Email sent successfully!');
-//     }
-//   });
-// };
-
-// module.exports = { sendmail };
-
-// const sendSelectionEmails = async (candidateEmail, candidateName, jobTitle, hrEmail, hrName) => {
-
-// }
-
-// const sendRejectionEmails = async (candidateEmail, candidateName, hrEmail, hrName, title, reason) =>
-// {
-
-// }
-
-// module.exports = { sendSelectionEmails, sendRejectionEmails };
-
-
-const http = require("http");
-const nodemailer = require("nodemailer");
-
-const sendmail =((email,  name, title, reason) => {
-    const auth = nodemailer.createTransport({
-        service: "gmail",
-        secure : true,
-        port : 465,
-        auth: {
-            user: "umanagare10@gmail.com",
-            pass: "tcrz lycp unmj ufgn"
-
-        }
-    });
-
-    let candidate_rec;
-    let hr_rec;
-    if(reason.length!==0)
-    {
-      candidate_rec = {
-        from : "umanagare10@gmail.com",
-        to : email,
-        subject : "Node Js Mail Testing!",
-        text : candidateSelectionEmailTemplate(name,title)
-    };
-
-    hr_rec = {
-      from : "umanagare10@gmail.com",
-      to : email,
-      subject : "Node Js Mail Testing!",
-      text : candidateSelectionEmailTemplate(name,title)
+  const mailOptions1 = {
+      from: process.env.EMAIL_ID,
+      to: candidatEmail,
+      subject:subject ,
+      text:status === 'select'? candidateSelectionEmailTemplate(candidateName,jobTitle,adminName):candidateRejectionEmailTemplate(candidateName,reason,jobTitle,adminName)
   };
-  
-  
-  }
+  // 
 
-    auth.sendMail(receiver, (error, emailResponse) => {
-        if(error)
-        throw error;
-        console.log("success!");
-        response.end();
-    });
-    
+  transporter.sendMail(mailOptions1, (error, info) => {
+      if (error) {
+          console.error("Error sending email:", error);
+          return;
+      }
+      console.log("Email sent successfully 1:", info.response);
+      return info.response;
+  });
+
+  const mailOptions2 = {
+    from: process.env.EMAIL_ID,
+    to: admin_mail,
+    subject:subject ,
+    text:status === 'select'? hrSelectionEmailTemplate(adminName,candidateName,jobTitle):hrRejectionEmailTemplate(adminName, candidateName, reason, jobTitle)
+};
+
+transporter.sendMail(mailOptions2, (error, info) => {
+    if (error) {
+        console.error("Error sending email:", error);
+        return;
+    }
+    console.log("Email sent successfully:", info.response);
+    return info.response;
+});
 });
 
-module.exports={sendmail}
+
+module.exports={sendMail}
