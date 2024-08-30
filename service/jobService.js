@@ -93,6 +93,7 @@ const updateApplicationStatus=async(body)=>{
         candidateName:user.name
 
     }
+    const {id,status,reason,}=body
     console.log("updateApplicationStatus",body)
 
     const data = await Job_Application.findByIdAndUpdate(id, { status: status,reason:reason }, { new: true });
