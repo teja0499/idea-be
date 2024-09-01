@@ -34,6 +34,11 @@ const JobSchema = new Schema({
     salary: {
         type: Number,
         require: true
+    },
+    customFields: {
+        type: Map,
+        of: Schema.Types.Mixed, 
+        default: {}
     }
 })
 

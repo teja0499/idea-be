@@ -15,6 +15,8 @@ const createJob = async (jobData) => {
     return newJob;
 }
 
+
+
 const getJob = async () => {
     return await Job.find();
 }
@@ -99,8 +101,6 @@ const updateApplicationStatus=async(body)=>{
     const data = await Job_Application.findByIdAndUpdate(id, { status: status,reason:reason }, { new: true });
      sendMail(body)
     console.log(data);
-
-    
     return body;
 }
 

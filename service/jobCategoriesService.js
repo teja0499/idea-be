@@ -1,6 +1,6 @@
 const JobCategory=require('../models/JobCategory')
 
-const createJobCategorie = async (JobCategoryData) => {
+const add_Category = async (JobCategoryData) => {
     const jobCat = await JobCategory.findOne({'category':JobCategoryData.category});
     if (jobCat) {
         throw new Error('Job category already exists');
@@ -10,5 +10,16 @@ const createJobCategorie = async (JobCategoryData) => {
     return newJobCategory;
 }
 
+const getJobCategorie = async () => {
+    const jobCat = await JobCategory.find()
+    return jobCat;
+}
 
-module.exports={createJobCategorie}
+const removeJobCategorie = async (id) => {
+    const jobCat = await JobCategory.findByIdAndDelete(id)
+}
+
+
+
+
+module.exports={add_Category,getJobCategorie,removeJobCategorie}

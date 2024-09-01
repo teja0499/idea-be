@@ -23,14 +23,38 @@ router.post('/admin/create_job',async(req,res)=>{
     }
 })
 
-router.post('/admin/create_Job_Categorie',async(req,res)=>{
+router.post('/admin/add_category',async(req,res)=>{
     try {
-        const jobData=req.body
-        // console.log("Ragister",jobData);
+        const category=req.body
+        console.log("category",category);
         
-        const result=await JobCategorieService.createJobCategorie(jobData)
+        const result=await JobCategorieService.add_Category(category)
         res.json(result)
     } catch (error) {
+        res.status(401).json({ message: error.message });
+    }
+})
+
+router.get('/admin/get_Job_Categorie',async(req,res)=>{
+    try {
+        const all_catg=await JobCategorieService.getJobCategorie();
+        res.json(all_catg);
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({ message: error.message });
+    }
+})
+
+router.delete('/admin/delete_Categorie/:id',async(req,res)=>{
+    try {
+        const id=req.params.id;
+
+        console.log(id);
+        
+        await JobCategorieService.removeJobCategorie(id);
+        res.json("Deleted successfully");
+    } catch (error) {
+        console.log(error);
         res.status(401).json({ message: error.message });
     }
 })

@@ -37,8 +37,7 @@ const JobApplicationSchema=new Schema({
         ref: 'Job'
     },
     title:{
-        type:String,
-        
+        type:String,  
     },
     status: {
         type: String,
