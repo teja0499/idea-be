@@ -15,7 +15,6 @@ app.use(express.json())
 app.use('/admin',require('./controllers/adminController')) 
 app.use('/user',require('./controllers/userController.js'))
 app.use(require('./controllers/jobController.js'))
-// app.use(require('./controllers/patientController'))
 
 
 app.listen(port, () => {
